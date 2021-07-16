@@ -50,7 +50,7 @@ const EditableInput = ({
         </InputGroup.Button>
         {isEditable && (
           <InputGroup.Button onClick={onSaveClick}>
-            <Icon icon="check" />)
+            <Icon icon="check" />
           </InputGroup.Button>
         )}
       </InputGroup>
