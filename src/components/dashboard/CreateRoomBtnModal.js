@@ -1,19 +1,18 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
-  Alert,
   Button,
-  ControlLabel,
-  Form,
-  FormControl,
-  FormGroup,
   Icon,
   Modal,
+  Form,
+  ControlLabel,
+  FormControl,
+  FormGroup,
   Schema,
+  Alert,
 } from 'rsuite';
 import firebase from 'firebase/app';
-
 import { useModalState } from '../../misc/custom-hooks';
-import { database } from '../../misc/firebase';
+import { auth, database } from '../../misc/firebase';
 
 const { StringType } = Schema.Types;
 
@@ -31,9 +30,7 @@ const CreateRoomBtnModal = () => {
   const { isOpen, open, close } = useModalState();
 
   const [formValue, setFormValue] = useState(INITIAL_FORM);
-
   const [isLoading, setIsLoading] = useState(false);
-
   const formRef = useRef();
 
   const onFormChange = useCallback(value => {
@@ -44,16 +41,22 @@ const CreateRoomBtnModal = () => {
     if (!formRef.current.check()) {
       return;
     }
+
     setIsLoading(true);
 
     const newRoomdata = {
       ...formValue,
       createdAt: firebase.database.ServerValue.TIMESTAMP,
+      admins: {
+        [auth.currentUser.uid]: true,
+      },
     };
 
     try {
       await database.ref('rooms').push(newRoomdata);
+
       Alert.info(`${formValue.name} has been created`, 4000);
+
       setIsLoading(false);
       setFormValue(INITIAL_FORM);
       close();
@@ -71,7 +74,7 @@ const CreateRoomBtnModal = () => {
 
       <Modal show={isOpen} onHide={close}>
         <Modal.Header>
-          <Modal.Title>New Chat room</Modal.Title>
+          <Modal.Title>New chat room</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form
