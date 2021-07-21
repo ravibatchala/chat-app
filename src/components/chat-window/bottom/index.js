@@ -15,6 +15,7 @@ function assembleMessage(profile, chatId) {
       ...(profile.avatar ? { avatar: profile.avatar } : {}),
     },
     createdAt: firebase.database.ServerValue.TIMESTAMP,
+    likeCount: 0,
   };
 }
 
@@ -70,7 +71,7 @@ const Bottom = () => {
     <div>
       <InputGroup>
         <Input
-          placeholder="Write a new message ..."
+          placeholder="Write a new message here..."
           value={input}
           onChange={onInputChange}
           onKeyDown={onKeyDown}
